@@ -1,10 +1,13 @@
 from django import forms
 from django.contrib import admin
-from django.utils.safestring import mark_safe
 
 from netbox.admin import admin_site
 from utilities.forms import LaxURLField
+<<<<<<< 77b29a4bc3cbc0532cc0f9e79d9d124f0730725e
 from .models import CustomField, CustomFieldChoice, Graph, ExportTemplate, TopologyMap, UserAction, Webhook
+=======
+from .models import CustomField, CustomFieldChoice, Graph, ExportTemplate, TopologyMap, Webhook
+>>>>>>> Closes #2292: Remove the deprecated UserAction model
 
 
 def order_content_types(field):
@@ -120,16 +123,3 @@ class TopologyMapAdmin(admin.ModelAdmin):
     prepopulated_fields = {
         'slug': ['name'],
     }
-
-
-#
-# User actions
-#
-
-@admin.register(UserAction, site=admin_site)
-class UserActionAdmin(admin.ModelAdmin):
-    actions = None
-    list_display = ['user', 'action', 'content_type', 'object_id', '_message']
-
-    def _message(self, obj):
-        return mark_safe(obj.message)
