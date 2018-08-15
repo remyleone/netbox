@@ -708,19 +708,13 @@ class ComponentCreateView(View):
         if form.is_valid():
 
             new_components = []
-            data = deepcopy(form.cleaned_data)
 
-            for name in form.cleaned_data['name_pattern']:
+            for i, name in enumerate(form.cleaned_data['name_pattern']):
                 component_data = {
                     self.parent_field: parent.pk,
                     'name': name,
                 }
-                # Replace objects with their primary key to keep component_form.clean() happy
-                for k, v in data.items():
-                    if hasattr(v, 'pk'):
-                        component_data[k] = v.pk
-                    else:
-                        component_data[k] = v
+                component_data.update(form.get_component_data(i))
                 component_form = self.model_form(component_data)
                 if component_form.is_valid():
                     new_components.append(component_form.save(commit=False))

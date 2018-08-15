@@ -1,7 +1,7 @@
 from collections import OrderedDict
 
 from django.conf import settings
-from django.http import HttpResponseBadRequest, HttpResponseForbidden
+from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from drf_yasg import openapi
 from drf_yasg.openapi import Parameter
@@ -14,9 +14,10 @@ from rest_framework.viewsets import GenericViewSet, ViewSet
 from dcim import filters
 from dcim.models import (
     ConsolePort, ConsolePortTemplate, ConsoleServerPort, ConsoleServerPortTemplate, Device, DeviceBay,
-    DeviceBayTemplate, DeviceRole, DeviceType, Interface, InterfaceConnection, InterfaceTemplate, Manufacturer,
-    InventoryItem, Platform, PowerOutlet, PowerOutletTemplate, PowerPort, PowerPortTemplate, Rack, RackGroup,
-    RackReservation, RackRole, Region, Site, VirtualChassis,
+    DeviceBayTemplate, DeviceRole, DeviceType, FrontPanelPort, FrontPanelPortTemplate, Interface, InterfaceConnection,
+    InterfaceTemplate, InventoryItem, Manufacturer, Platform, PowerOutlet, PowerOutletTemplate, PowerPort,
+    PowerPortTemplate, Rack, RackGroup, RackReservation, RackRole, RearPanelPort, RearPanelPortTemplate, Region, Site,
+    VirtualChassis,
 )
 from extras.api.serializers import RenderedGraphSerializer
 from extras.api.views import CustomFieldModelViewSet
@@ -191,6 +192,18 @@ class InterfaceTemplateViewSet(ModelViewSet):
     filter_class = filters.InterfaceTemplateFilter
 
 
+class FrontPanelPortTemplateViewSet(ModelViewSet):
+    queryset = FrontPanelPortTemplate.objects.select_related('device_type__manufacturer')
+    serializer_class = serializers.FrontPanelPortTemplateSerializer
+    filter_class = filters.FrontPanelPortTemplateFilter
+
+
+class RearPanelPortTemplateViewSet(ModelViewSet):
+    queryset = RearPanelPortTemplate.objects.select_related('device_type__manufacturer')
+    serializer_class = serializers.RearPanelPortTemplateSerializer
+    filter_class = filters.RearPanelPortTemplateFilter
+
+
 class DeviceBayTemplateViewSet(ModelViewSet):
     queryset = DeviceBayTemplate.objects.select_related('device_type__manufacturer')
     serializer_class = serializers.DeviceBayTemplateSerializer
@@ -350,6 +363,18 @@ class InterfaceViewSet(ModelViewSet):
         queryset = Graph.objects.filter(type=GRAPH_TYPE_INTERFACE)
         serializer = RenderedGraphSerializer(queryset, many=True, context={'graphed_object': interface})
         return Response(serializer.data)
+
+
+class FrontPanelPortViewSet(ModelViewSet):
+    queryset = FrontPanelPort.objects.select_related('device__device_type__manufacturer', 'rear_port')
+    serializer_class = serializers.FrontPanelPortSerializer
+    filter_class = filters.FrontPanelPortFilter
+
+
+class RearPanelPortViewSet(ModelViewSet):
+    queryset = RearPanelPort.objects.select_related('device__device_type__manufacturer')
+    serializer_class = serializers.RearPanelPortSerializer
+    filter_class = filters.RearPanelPortFilter
 
 
 class DeviceBayViewSet(ModelViewSet):

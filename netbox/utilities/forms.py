@@ -640,6 +640,20 @@ class ComponentForm(BootstrapMixin, forms.Form):
         self.parent = parent
         super(ComponentForm, self).__init__(*args, **kwargs)
 
+    def get_component_data(self, iteration):
+        """
+        Return the data to populate the ModelForm used to create individual components.
+        """
+        component_data = {}
+        for k, v in self.cleaned_data.items():
+            if hasattr(v, 'pk'):
+                # Replace objects with their primary key to keep component_form.clean() happy
+                component_data[k] = v.pk
+            else:
+                component_data[k] = v
+
+        return component_data
+
 
 class BulkEditForm(forms.Form):
     """
