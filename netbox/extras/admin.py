@@ -3,11 +3,7 @@ from django.contrib import admin
 
 from netbox.admin import admin_site
 from utilities.forms import LaxURLField
-<<<<<<< 77b29a4bc3cbc0532cc0f9e79d9d124f0730725e
-from .models import CustomField, CustomFieldChoice, Graph, ExportTemplate, TopologyMap, UserAction, Webhook
-=======
 from .models import CustomField, CustomFieldChoice, Graph, ExportTemplate, TopologyMap, Webhook
->>>>>>> Closes #2292: Remove the deprecated UserAction model
 
 
 def order_content_types(field):
